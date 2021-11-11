@@ -190,6 +190,9 @@ extern "C" {
  #else /*__APPLE__*/
 
   #include <GL/glcorearb.h>
+  #if defined(GLFW_INCLUDE_GLEXT)
+   #include <GL/glext.h>
+  #endif
 
  #endif /*__APPLE__*/
 
@@ -372,7 +375,7 @@ extern "C" {
  *
  *  The naming of the key codes follow these rules:
  *   - The US keyboard layout is used
- *   - Names of printable alpha-numeric characters are used (e.g. "A", "R",
+ *   - Names of printable alphanumeric characters are used (e.g. "A", "R",
  *     "3", etc.)
  *   - For non-alphanumeric characters, Unicode:ish names are used (e.g.
  *     "COMMA", "LEFT_SQUARE_BRACKET", etc.). Note that some names do not
@@ -2220,6 +2223,54 @@ GLFWAPI void glfwInitHint(int hint, int value);
  *  @ingroup init
  */
 GLFWAPI void glfwInitAllocator(const GLFWallocator* allocator);
+
+#if defined(VK_VERSION_1_0)
+
+/*! @brief Sets the desired Vulkan `vkGetInstanceProcAddr` function.
+ *
+ *  This function sets the `vkGetInstanceProcAddr` function that GLFW will use for all
+ *  Vulkan related entry point queries.
+ *
+ *  This feature is mostly useful on macOS, if your copy of the Vulkan loader is in
+ *  a location where GLFW cannot find it through dynamic loading, or if you are still
+ *  using the static library version of the loader.
+ *
+ *  If set to `NULL`, GLFW will try to load the Vulkan loader dynamically by its standard
+ *  name and get this function from there.  This is the default behavior.
+ *
+ *  The standard name of the loader is `vulkan-1.dll` on Windows, `libvulkan.so.1` on
+ *  Linux and other Unix-like systems and `libvulkan.1.dylib` on macOS.  If your code is
+ *  also loading it via these names then you probably don't need to use this function.
+ *
+ *  The function address you set is never reset by GLFW, but it only takes effect during
+ *  initialization.  Once GLFW has been initialized, any updates will be ignored until the
+ *  library is terminated and initialized again.
+ *
+ *  @param[in] loader The address of the function to use, or `NULL`.
+ *
+ *  @par Loader function signature
+ *  @code
+ *  PFN_vkVoidFunction vkGetInstanceProcAddr(VkInstance instance, const char* name)
+ *  @endcode
+ *  For more information about this function, see the
+ *  [Vulkan Registry](https://www.khronos.org/registry/vulkan/).
+ *
+ *  @errors None.
+ *
+ *  @remark This function may be called before @ref glfwInit.
+ *
+ *  @thread_safety This function must only be called from the main thread.
+ *
+ *  @sa @ref vulkan_loader
+ *  @sa @ref glfwInit
+ *
+ *  @since Added in version 3.4.
+ *
+ *  @ingroup init
+ */
+GLFWAPI void glfwInitVulkanLoader(PFN_vkGetInstanceProcAddr loader);
+
+#endif /*VK_VERSION_1_0*/
 
 /*! @brief Retrieves the version of the GLFW library.
  *
