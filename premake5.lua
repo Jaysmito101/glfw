@@ -16,7 +16,12 @@ project "GLFW"
 		"src/input.c",
 		"src/monitor.c",
 		"src/vulkan.c",
-		"src/window.c"
+		"src/platform.c",
+		"src/window.c",
+		"src/null_window.c",
+		"src/null_init.c",
+		"src/null_joystick.c",
+		"src/null_monitor.c",
 	}
 	filter "system:linux"
 		pic "On"
@@ -52,6 +57,7 @@ project "GLFW"
 			"src/win32_monitor.c",
 			"src/win32_time.c",
 			"src/win32_thread.c",
+			"src/win32_module.c",
 			"src/win32_window.c",
 			"src/wgl_context.c",
 			"src/egl_context.c",
@@ -67,7 +73,9 @@ project "GLFW"
 	filter "configurations:Debug"
 		runtime "Debug"
 		symbols "on"
+		buildoptions "/MTd"
 
 	filter "configurations:Release"
 		runtime "Release"
 		optimize "on"
+		buildoptions "/MT"
